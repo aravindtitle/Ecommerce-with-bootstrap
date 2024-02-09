@@ -1,15 +1,18 @@
-import "./App.css";
-import Cart from "./Components/Cart/Cart";
+// App.js
+import React from "react";
+import { CartProvider } from "./Components/Cart/CartContext";
+import ProductsScreen from "./Components/ProductScreen";
+import CartIcon from "./Components/Cart/CartIcon";
 
-import ProductsScreen from "./Components/ProductCard";
-
-function App() {
+export default function App() {
   return (
-    <div>
-      <Cart />
-      <ProductsScreen />
-    </div>
+    <CartProvider>
+      <div className="container">
+        <ProductsScreen />
+        <div style={{ position: "fixed", bottom: "20px", right: "20px" }}>
+          <CartIcon />
+        </div>
+      </div>
+    </CartProvider>
   );
 }
-
-export default App;
