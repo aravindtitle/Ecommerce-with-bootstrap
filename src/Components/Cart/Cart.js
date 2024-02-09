@@ -1,4 +1,3 @@
-// Cart.js
 import React, { useContext } from "react";
 import { useCart } from "./CartContext";
 
@@ -16,8 +15,8 @@ const Cart = () => {
     <div>
       <h2>Cart</h2>
       <ul>
-        {cartItems.map((item, index) => (
-          <li key={index}>
+        {cartItems.map((item) => (
+          <li key={item.id}>
             <div>
               <img
                 src={item.imageUrl}
@@ -28,7 +27,7 @@ const Cart = () => {
                 <p>{item.title}</p>
                 <p>Price: ${item.price}</p>
                 <p>Quantity: {item.quantity}</p>
-                <button onClick={() => removeFromCart(index)}>Remove</button>
+                <button onClick={() => removeFromCart(item.id)}>Remove</button>
               </div>
             </div>
           </li>

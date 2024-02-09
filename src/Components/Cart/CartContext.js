@@ -1,51 +1,43 @@
 // CartContext.js
-import React, { createContext, useState, useContext } from "react";
+import React, { createContext, useContext, useState } from "react";
 
+// Create a context for the cart
 const CartContext = createContext();
 
+// Custom hook to access the cart context
+export const useCart = () => {
+  return useContext(CartContext);
+};
+
+// Cart provider component
 export const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState([]);
 
-  const addToCart = (item) => {
-    const existingItem = cartItems.find(
-      (cartItem) => cartItem.title === item.title
+  // Function to add an item to the cart
+  const addToCart = (product) => {
+    const existingItemIndex = cartItems.findIndex(
+      (item) => item.id === product.id
     );
-    if (existingItem) {
-      setCartItems(
-        cartItems.map((cartItem) =>
-          cartItem.title === item.title
-            ? { ...cartItem, quantity: cartItem.quantity + 1 }
-            : cartItem
-        )
-      );
+    if (existingItemIndex !== -1) {
+      // If the product already exists in the cart, update its quantity
+      const updatedCartItems = [...cartItems];
+      updatedCartItems[existingItemIndex].quantity++;
+      setCartItems(updatedCartItems);
     } else {
-      setCartItems([...cartItems, { ...item, quantity: 1 }]);
+      // If the product is not in the cart, add it
+      setCartItems([...cartItems, { ...product, quantity: 1 }]);
     }
   };
 
-  const removeFromCart = (index) => {
-    const newCartItems = [...cartItems];
-    newCartItems.splice(index, 1);
-    setCartItems(newCartItems);
-  };
-
-  const clearCart = () => {
-    setCartItems([]);
+  // Function to remove an item from the cart
+  const removeFromCart = (productId) => {
+    const updatedCartItems = cartItems.filter((item) => item.id !== productId);
+    setCartItems(updatedCartItems);
   };
 
   return (
-    <CartContext.Provider
-      value={{ cartItems, addToCart, removeFromCart, clearCart }}
-    >
+    <CartContext.Provider value={{ cartItems, addToCart, removeFromCart }}>
       {children}
     </CartContext.Provider>
   );
-};
-
-export const useCart = () => {
-  const context = useContext(CartContext);
-  if (!context) {
-    throw new Error("useCart must be used within a CartProvider");
-  }
-  return context;
 };
