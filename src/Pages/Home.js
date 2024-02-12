@@ -1,42 +1,30 @@
-// pages/Home.js
 import React from "react";
-import ProductCard from "../Components/ProductCard";
+import { Container, Row, Col, Button } from "react-bootstrap";
 
-function Home() {
-  // Dummy product data
-  const products = [
-    {
-      id: 1,
-      title: "Product 1",
-      price: 10,
-      imageUrl: "https://via.placeholder.com/150",
-    },
-    {
-      id: 2,
-      title: "Product 2",
-      price: 20,
-      imageUrl: "https://via.placeholder.com/150",
-    },
-    {
-      id: 3,
-      title: "Product 3",
-      price: 30,
-      imageUrl: "https://via.placeholder.com/150",
-    },
-  ];
-
+const Home = () => {
   return (
-    <div>
-      <h2>Featured Products</h2>
-      <div className="row">
-        {products.map((product) => (
-          <div className="col-md-4" key={product.id}>
-            <ProductCard product={product} />
-          </div>
-        ))}
-      </div>
-    </div>
+    <Container>
+      <Row className="mt-5">
+        <Col>
+          <h1 className="text-center bg-brown text-white p-3">The Generics</h1>
+        </Col>
+      </Row>
+      <Row className="mt-5">
+        <Col>
+          <h2 className="text-center border border-blue p-3">
+            Get Our Latest Album
+          </h2>
+        </Col>
+      </Row>
+      <Row className="mt-5">
+        <Col>
+          <h2>Tours</h2>
+          <p>JUL16 DETROIT, MI DTE ENERGY MUSIC THEATRE </p>
+          <Button variant="primary">Buy Tickets</Button>
+        </Col>
+      </Row>
+    </Container>
   );
-}
+};
 
 export default Home;

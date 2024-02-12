@@ -1,4 +1,5 @@
 import React from "react";
+import { Container, Row, Col } from "react-bootstrap";
 import ProductCard from "./ProductCard";
 
 const productsArr = [
@@ -26,11 +27,15 @@ const productsArr = [
 
 const ProductList = () => {
   return (
-    <div className="d-flex flex-wrap justify-content-center">
-      {productsArr.map((product, index) => (
-        <ProductCard key={index} {...product} />
-      ))}
-    </div>
+    <Container>
+      <Row className="justify-content-center">
+        {productsArr.map((product, index) => (
+          <Col key={index} xs={12} sm={6} md={4} lg={3}>
+            <ProductCard {...product} />
+          </Col>
+        ))}
+      </Row>
+    </Container>
   );
 };
 

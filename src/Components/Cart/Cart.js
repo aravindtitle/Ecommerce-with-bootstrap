@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import { useCart } from "./CartContext";
 
 const Cart = () => {
-  const { cartItems, removeFromCart } = useCart();
+  const { cartItems, removeFromCart, clearCart } = useCart();
 
   const getTotalPrice = () => {
     return cartItems.reduce(
@@ -27,6 +27,7 @@ const Cart = () => {
                 <p>{item.title}</p>
                 <p>Price: ${item.price}</p>
                 <p>Quantity: {item.quantity}</p>
+                <button onClick={clearCart}>ClearCart</button>
                 <button onClick={() => removeFromCart(item.id)}>Remove</button>
               </div>
             </div>

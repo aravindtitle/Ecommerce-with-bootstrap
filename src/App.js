@@ -2,29 +2,24 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { CartProvider } from "./Components/Cart/CartContext";
-import ProductsScreen from "./Components/ProductScreen";
 import CartIcon from "./Components/Cart/CartIcon";
 import Navigation from "./Components/Navigation";
+import Home from "./Pages/Home";
 import About from "./Pages/About";
+import Store from "./Pages/Store";
 
-export default function App() {
+const App = () => {
   return (
     <Router>
       <CartProvider>
-        <div>
-          <Navigation />
-          <div className="container">
-            <Routes>
-              {" "}
-              {/* Wrap your Route components within a Routes container */}
-              <Route path="/" element={<ProductsScreen />} />{" "}
-              {/* Use the 'element' prop */}
-              <Route path="/about" element={<About />} />{" "}
-              {/* Use the 'element' prop */}
-            </Routes>
-          </div>
-        </div>
+        <Navigation />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/store" element={<Store />} />
+          <Route path="/about" element={<About />} />
+        </Routes>
       </CartProvider>
     </Router>
   );
-}
+};
+export default App;
