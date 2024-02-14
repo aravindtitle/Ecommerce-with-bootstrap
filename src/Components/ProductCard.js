@@ -2,8 +2,10 @@
 import React, { useContext } from "react";
 import { Card, Button } from "react-bootstrap";
 import { useCart } from "./Cart/CartContext";
+import { Link } from "react-router-dom";
 
-const ProductCard = ({ title, price, imageUrl }) => {
+const ProductCard = ({ id, title, price, imageUrl }) => {
+  // Add 'id' prop
   const { addToCart } = useCart();
 
   return (
@@ -12,9 +14,13 @@ const ProductCard = ({ title, price, imageUrl }) => {
       <Card.Body>
         <Card.Title>{title}</Card.Title>
         <Card.Text>Price: ${price}</Card.Text>
+        {/* Add Link to product detail page */}
+        <Link to={`/product/${id}`} className="btn btn-primary">
+          View Details
+        </Link>
         <Button
           variant="primary"
-          onClick={() => addToCart({ title, price, imageUrl })}
+          onClick={() => addToCart({ id, title, price, imageUrl })} // Include 'id' in addToCart
         >
           Add to Cart
         </Button>

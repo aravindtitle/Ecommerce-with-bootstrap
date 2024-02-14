@@ -7,7 +7,11 @@ import Navigation from "./Components/Navigation";
 import Home from "./Pages/Home";
 import About from "./Pages/About";
 import Store from "./Pages/Store";
-import ContactUs from "./Pages/ContactUs"; // Import the ContactUs component
+import ProductPage from "./Pages/ProductPage"; // Import the ProductPage component
+
+const productsArr = [
+  /* your product data here */
+];
 
 const App = () => {
   return (
@@ -18,8 +22,9 @@ const App = () => {
           <Route path="/" exact component={Home} />
           <Route path="/store" component={Store} />
           <Route path="/about" component={About} />
-          <Route path="/contact-us" component={ContactUs} /> // Add route for
-          ContactUs
+          <Route path="/product/:productId">
+            <ProductPage products={productsArr} />
+          </Route>
         </Switch>
         <CartIcon />
       </CartProvider>
