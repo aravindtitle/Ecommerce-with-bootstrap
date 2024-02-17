@@ -27,6 +27,11 @@ const Navigation = () => {
                 </Nav.Link>
               </Col>
               <Col>
+                <Nav.Link as={Link} to="/Login">
+                  Login
+                </Nav.Link>
+              </Col>
+              <Col>
                 <Nav.Link as={Link} to="/contact-us">
                   Contact Us
                 </Nav.Link>
