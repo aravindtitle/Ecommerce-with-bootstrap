@@ -1,10 +1,9 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   BrowserRouter as Router,
   Route,
   Switch,
-  Link,
-  useHistory,
+  Redirect,
 } from "react-router-dom";
 import { CartProvider } from "./Components/Cart/CartContext";
 import CartIcon from "./Components/Cart/CartIcon";
@@ -21,13 +20,7 @@ import "firebase/compat/auth";
 const productsArr = [];
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDll9GLS_DagY9AKtLdE1skrN0MHQgsw5A",
-  authDomain: "logging-page-53cb2.firebaseapp.com",
-  projectId: "logging-page-53cb2",
-  storageBucket: "logging-page-53cb2.appspot.com",
-  messagingSenderId: "289284890131",
-  appId: "1:289284890131:web:11e1c4b7d3fbdfd91be9e6",
-  measurementId: "G-ZCBH215B6J",
+  // Your Firebase configuration
 };
 
 firebase.initializeApp(firebaseConfig);
@@ -71,20 +64,32 @@ const App = () => {
           <Navigation />
           <Switch>
             <Route path="/" exact component={Home} />
-            <Route path="/store" component={Store} />
             <Route path="/about" component={About} />
-            <Route path="/product/:productId">
-              <ProductPage products={productsArr} />
-            </Route>
             <Route path="/contactus" component={ContactUs} />
             <Route path="/login">
               <LoginPage onLogin={handleLogin} error={error} />
             </Route>
+            <PrivateRoute path="/store" component={Store} />{" "}
+            {/* Use PrivateRoute for the products page */}
+            <Route path="/product/:productId" component={ProductPage} />
           </Switch>
           <CartIcon />
         </CartProvider>
       </Router>
     </AuthContext.Provider>
+  );
+};
+
+const PrivateRoute = ({ component: Component, ...rest }) => {
+  const { user } = useContext(AuthContext);
+
+  return (
+    <Route
+      {...rest}
+      render={(props) =>
+        user ? <Component {...props} /> : <Redirect to="/login" />
+      }
+    />
   );
 };
 
