@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import {
   BrowserRouter as Router,
   Route,
@@ -14,75 +14,91 @@ import Store from "./Pages/Store";
 import ContactUs from "./Pages/ContactUs";
 import ProductPage from "./Pages/ProductPage";
 import LoginPage from "./Pages/LoginPage";
+import axios from "axios"; // Import axios for making HTTP requests
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
 
-const productsArr = [];
-
 const firebaseConfig = {
-  // Your Firebase configuration
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_AUTH_DOMAIN",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_STORAGE_BUCKET",
+  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+  appId: "YOUR_APP_ID",
+  measurementId: "YOUR_MEASUREMENT_ID",
 };
 
 firebase.initializeApp(firebaseConfig);
 
-const AuthContext = React.createContext();
-
 const App = () => {
   const [user, setUser] = useState(null);
   const [error, setError] = useState(null);
-  const [token, setToken] = useState(localStorage.getItem("token"));
 
   useEffect(() => {
-    // Update local storage when token changes
-    localStorage.setItem("token", token);
-  }, [token]);
+    const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
+      setUser(user);
+    });
 
-  const handleLogin = async (email, password) => {
+    return () => unsubscribe();
+  }, []);
+
+  const addToCart = async (product) => {
     try {
-      const userCredential = await firebase
-        .auth()
-        .signInWithEmailAndPassword(email, password);
-      setUser(userCredential.user);
-      setError(null);
-      const idToken = await userCredential.user.getIdToken();
-      setToken(idToken);
+      // Check if user is logged in
+      if (!user) {
+        throw new Error("User is not logged in");
+      }
+
+      // Add product to cart using crudcrud.com API
+      await axios.post(
+        `https://crudcrud.com/api/62ccd67ba3e14d7cabf6ad4c3048be2d/cart/${user.email}`,
+        product
+      );
     } catch (error) {
       setError(error.message);
     }
   };
 
-  const handleLogout = () => {
-    firebase.auth().signOut();
-    setUser(null);
-    setToken(null);
+  const getCartItems = async () => {
+    try {
+      // Check if user is logged in
+      if (!user) {
+        throw new Error("User is not logged in");
+      }
+
+      // Retrieve cart items using crudcrud.com API
+      const response = await axios.get(
+        `https://crudcrud.com/api/62ccd67ba3e14d7cabf6ad4c3048be2d/cart/${user.email}`
+      );
+      return response.data;
+    } catch (error) {
+      setError(error.message);
+    }
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, handleLogin, handleLogout }}>
-      <Router>
-        <CartProvider>
-          <Navigation />
-          <Switch>
-            <Route path="/" exact component={Home} />
-            <Route path="/about" component={About} />
-            <Route path="/contactus" component={ContactUs} />
-            <Route path="/login">
-              <LoginPage onLogin={handleLogin} error={error} />
-            </Route>
-            <PrivateRoute path="/store" component={Store} />{" "}
-            {/* Use PrivateRoute for the products page */}
-            <Route path="/product/:productId" component={ProductPage} />
-          </Switch>
-          <CartIcon />
-        </CartProvider>
-      </Router>
-    </AuthContext.Provider>
+    <Router>
+      <CartProvider addToCart={addToCart} getCartItems={getCartItems}>
+        <Navigation user={user} />
+        <Switch>
+          <Route path="/" exact component={Home} />
+          <Route path="/about" component={About} />
+          <Route path="/contactus" component={ContactUs} />
+          <Route path="/login" component={LoginPage} />
+          <PrivateRoute path="/store" component={Store} user={user} />
+          <PrivateRoute
+            path="/product/:productId"
+            component={ProductPage}
+            user={user}
+          />
+        </Switch>
+        <CartIcon />
+      </CartProvider>
+    </Router>
   );
 };
 
-const PrivateRoute = ({ component: Component, ...rest }) => {
-  const { user } = useContext(AuthContext);
-
+const PrivateRoute = ({ component: Component, user, ...rest }) => {
   return (
     <Route
       {...rest}
